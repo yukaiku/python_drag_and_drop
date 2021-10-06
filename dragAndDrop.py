@@ -38,9 +38,10 @@ def drag_stop(event):
     x = cBox.winfo_x()
     y = cBox.winfo_y()
     box_update = update_cBox(box_update, x, y)
-    update_arrow(x, y)
-    update_label(x,y)
-    update_gBox(box_update, x, y)
+    if(box_update):
+        update_arrow(x, y)
+        update_label(x, y)
+        update_gBox(x, y)
 
 
 # Gets boxUpdate and box X and Y
@@ -85,7 +86,7 @@ def update_cBox(box_update, x, y):
     return box_update
 
 
-# update arrow postions
+# update arrow positions
 def update_arrow(x, y):
     global movePhase
     x = x
@@ -127,36 +128,35 @@ def update_arrow(x, y):
         imgCanvasR.itemconfigure(2, state='normal')
         imgCanvasR.place(x=arrowX[movePhase + 1], y=arrowY[movePhase + 1])
 
-#updateLabel
-def update_label(x,y):
+
+# updateLabel
+def update_label(x, y):
     global movePhase
     x = x
     y = y
     if movePhase + 2 != len(boxXList):
-        label.place(x=arrowX[movePhase+1], y=arrowY[movePhase+1])
+        label.place(x=labelX[movePhase + 1], y=labelY[movePhase + 1])
         if movePhase % 2 != 0:
             label.config(text=textArray[0])
+            print(movePhase)
         else:
             label.config(text=textArray[1])
 
 
 # Moves gbox around and call last phase if end of array
-def update_gBox(box_update, x, y):
+def update_gBox(x, y):
     global moveType
     global movePhase
-    box_update = box_update
     x = x
     y = y
     if movePhase + 2 != len(boxXList):
-        if moveType and box_update:  # Horizontally
+        if moveType:  # Horizontally
             greyBox.place(y=boxYList[movePhase + 2])
-        elif not moveType and box_update:  # Vertically
+        elif not moveType:  # Vertically
             greyBox.place(x=boxXList[movePhase + 2])
-        if box_update:
-            movePhase += 1
-            moveType = not moveType
-            label.place(x=labelX[movePhase], y=labelY[movePhase])
-    elif (movePhase + 2) == len(boxXList) and box_update:  # Removes all functions post final case
+        movePhase += 1
+        moveType = not moveType
+    elif (movePhase + 2) == len(boxXList):  # Removes all functions post final case
         last_phase()
 
 
@@ -189,18 +189,18 @@ cBox.bind("<ButtonRelease-1>", drag_stop)
 
 # Text Label
 textArray = ["Drag & Drop\nhorizontally to\nthe next case", "Drag & Drop\nvertically to\nthe next case"]
-label = Label(text=textArray[0], highlightthickness=0, bd=0)
-label.config(font=("Roboto", 7), justify='left')
-labelX = [220 / 3 + 5, window.winfo_width() - 5, 0, 0,
-          0, 0, 0, 0,
-          0, 0, 0]
-labelY = [(40 / 3) - 5, (220 / 3), 0, 0,
-          0, 0, 0, 0,
-          0, 0, 0]
+label = Label(text=textArray[0], highlightthickness=0, bd=0, bg="#ECF1F4")
+label.config(font=("Roboto", 5), justify='left')
+labelX = [220 / 3 + 5, 775, 697, 5,
+          220 / 3 + 5, 725, 647, 55,
+          220 / 3 + 55, 670, 597]
+labelY = [(40 / 3), 220/3+3, 265, 202,
+          (40 / 3) + 53, (220/3)+53, 215, 152,
+          (40 / 3) + 103, (220/3)+103, 165]
 label.place(x=labelX[movePhase], y=labelY[movePhase])
 window.update()  # IMP To allow arrows to be shown
 #   R Arrow label at position 0,4,8
-arrowX = [52, window.winfo_width() - 53, window.winfo_width() - 82, -3,
+arrowX = [52, window.winfo_width() - 53, window.winfo_width() - 82, -4,
           52, window.winfo_width() - 103, window.winfo_width() - 132, 46,
           102, 0, window.winfo_width() - 178]  # x = 53 - 3
 arrowY = [50 / 3 - 23, 50, 247, window.winfo_height() - 78,
@@ -235,13 +235,6 @@ imgCanvasU = Canvas(window, height=(arrowU1.height() * 2) + 4, width=arrowU1.wid
                     highlightthickness=0)
 imgCanvasU.create_image(arrowU1.width() + 10, 10, image=arrowU1)
 imgCanvasU.create_image(arrowU1.width() + 10, arrowU1.height() + 10, image=arrowU2)
-
-# imgCanvasD.place(x=arrowX[movePhase], y=arrowY[movePhase])
-# imgCanvasL.place(x=arrowX[movePhase], y=arrowY[movePhase])
-# imgCanvasU.place(x=arrowX[movePhase], y=arrowY[movePhase])
-# imgCanvasD.place_forget()
-# imgCanvasL.place_forget()
-# imgCanvasU.place_forget()
 
 Misc.lift(greyBox)
 Misc.lift(cBox)
