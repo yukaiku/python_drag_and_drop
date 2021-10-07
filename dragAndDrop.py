@@ -1,4 +1,5 @@
 from tkinter import *
+import tkinter.font as tkfont
 from PIL import ImageTk, Image
 
 moveType = True
@@ -37,6 +38,7 @@ def drag_motion(event):
 
             Description:
             Moves the box based on arrow location on a X/Y plane
+            Disable box from moving past start and end points
         """
     widget = event.widget
     global moveType
@@ -45,11 +47,38 @@ def drag_motion(event):
     # Alternate slide type
     if moveType:  # Move Horizontally
         x = cBox.winfo_x() + event.x
-        cBox.place(x=x)
+        # Depending on which phase, the cBox check the start and end points
+        if movePhase == 0 or movePhase == 4 or movePhase == 8:
+            if x <= boxXList[movePhase]:
+                cBox.place(x=boxXList[movePhase])
+            elif x <= boxXList[movePhase + 1]:
+                cBox.place(x=x)
+            else:
+                cBox.place(x=boxXList[movePhase + 1])
+        elif movePhase == 2 or movePhase == 6 or movePhase == 10:
+            if x >= boxXList[movePhase]:
+                cBox.place(x=boxXList[movePhase])
+            elif x >= boxXList[movePhase + 1]:
+                cBox.place(x=x)
+            else:
+                cBox.place(x=boxXList[movePhase + 1])
     else:  # Move Vertically
-        y = cBox.winfo_y() + event.y
-        cBox.place(y=y)
 
+        y = cBox.winfo_y() + event.y
+        if movePhase == 1 or movePhase == 5 or movePhase == 9:
+            if y <= boxYList[movePhase]:
+                cBox.place(y=boxYList[movePhase])
+            elif y <= boxYList[movePhase + 1]:
+                cBox.place(y=y)
+            else:
+                cBox.place(y=boxYList[movePhase + 1])
+        elif movePhase == 3 or movePhase == 7 or movePhase == 11:
+            if y >= boxYList[movePhase]:
+                cBox.place(y=boxYList[movePhase])
+            elif y >= boxYList[movePhase + 1]:
+                cBox.place(y=y)
+            else:
+                cBox.place(y=boxYList[movePhase + 1])
 
 
 def drag_stop(event):
@@ -71,14 +100,12 @@ def drag_stop(event):
     x = cBox.winfo_x()
     y = cBox.winfo_y()
     box_update = update_cBox(box_update, x, y)
-    if(box_update):
+    if (box_update):
         update_arrow(x, y)
         update_label(x, y)
         update_gBox(x, y)
     if movePhase == 9:
-        Misc.lift(label)
         Misc.lift(imgCanvasD)
-
 
 
 def update_cBox(box_update, x, y):
@@ -201,14 +228,13 @@ def update_label(x, y):
         label.place(x=labelX[movePhase + 1], y=labelY[movePhase + 1])
         if movePhase % 2 != 0:  # change text and change justify to right or left depending on phase
             label.config(text=textArray[0])
-            if (movePhase == 1 or movePhase == 5 or movePhase == 9): # Left Arrow
+            if (movePhase == 1 or movePhase == 5 or movePhase == 9):  # Left Arrow
                 label.config(justify='right')
             else:  # Right Arrow
                 label.config(justify='left')
         else:  # change text and center align if phase is at up or down arrow
             label.config(text=textArray[1])
             label.config(justify='center')
-
 
 
 def update_gBox(x, y):
@@ -249,7 +275,9 @@ def last_phase():
                         Updates label, grey box and click box status
                     """
     greyBox.destroy()
-    label.destroy()
+    label.place(x=126 - (label.winfo_width() / 2), y=175 - (label.winfo_height() / 4))
+    label.config(text="Final Case", font=("Roboto",6,"bold"), justify="center")
+    label.lift()
     cBox.unbind("<Button-1>")
     cBox.unbind("<B1-Motion>")
     cBox.unbind("<ButtonRelease-1>")
@@ -262,11 +290,11 @@ window.geometry("820x300")  # Dimensions 2460x900 divide by 3
 background = Canvas(window, height=300, width=820, bg="#ECF1F4")
 background.place(x=-3, y=-3)
 
-greyBox = Frame(window, width=50, height=50, bg="#ECF1F4", highlightbackground="#9F9F9F", highlightthickness=5)
+greyBox = Frame(window, width=50, height=50, bg="#ECF1F4", highlightbackground="#9F9F9F", highlightthickness=3)
 greyBox.place(x=boxXList[1], y=boxYList[1])
 
 cBox = Frame(window, width=50, height=50, bg="#ECF1F4", highlightbackground="#1A1A1B",
-             highlightthickness=5)  # Clickable Box
+             highlightthickness=3)  # Clickable Box
 cBox.place(x=boxXList[0], y=boxYList[0])
 cBox.bind("<Button-1>", drag_start)
 cBox.bind("<B1-Motion>", drag_motion)
@@ -279,18 +307,18 @@ label.config(font=("Roboto", 5), justify='left')
 labelX = [220 / 3 + 5, 775, 699, 5,
           220 / 3 + 5, 725, 649, 55,
           220 / 3 + 55, 675, 599]
-labelY = [(40 / 3), 220/3+3, 265, 202,
-          (40 / 3) + 53, (220/3)+53, 215, 152,
-          (40 / 3) + 103, (220/3)+86, 165]
+labelY = [(40 / 3), 220 / 3 + 3, 265, 202,
+          (40 / 3) + 53, (220 / 3) + 53, 215, 152,
+          (40 / 3) + 103, (220 / 3) + 86, 165]
 label.place(x=labelX[movePhase], y=labelY[movePhase])
 window.update()  # IMP To allow arrows to be shown
 #   R Arrow label at position 0,4,8
 arrowX = [55, window.winfo_width() - 35, window.winfo_width() - 78, 15,
           55, window.winfo_width() - 85, window.winfo_width() - 128, 65,
-          105, window.winfo_width()-135, window.winfo_width() - 178]  # x = 53 - 3
+          105, window.winfo_width() - 135, window.winfo_width() - 178]  # x = 53 - 3
 arrowY = [50 / 3 - 3, 55, 267, window.winfo_height() - 75,
           50 / 3 + 49, 105, 217, window.winfo_height() - 125,
-          50 / 3 + 99, 138, 167]
+          50 / 3 + 99, 115, 167]
 arrowR1 = PhotoImage(file="arrow_right.png")
 arrowR2 = PhotoImage(file="arrow_right.png")
 arrowD1 = PhotoImage(file="arrow_down.png")
@@ -308,8 +336,8 @@ imgCanvasR.place(x=arrowX[movePhase], y=arrowY[movePhase])
 
 imgCanvasD = Canvas(window, height=(arrowD1.height() * 2), width=arrowD1.width(), bg="#ECF1F4",
                     highlightthickness=0)
-imgCanvasD.create_image(arrowD1.width()/2,5, image=arrowD1)
-imgCanvasD.create_image(arrowD1.width()/2, arrowD1.height()+5, image=arrowD2)
+imgCanvasD.create_image(arrowD1.width() / 2, 5, image=arrowD1)
+imgCanvasD.create_image(arrowD1.width() / 2, arrowD1.height() + 5, image=arrowD2)
 
 imgCanvasL = Canvas(window, width=(arrowL1.width() * 2), height=arrowL1.height(), bg="#ECF1F4",
                     highlightthickness=0)
@@ -318,8 +346,8 @@ imgCanvasL.create_image(arrowL1.width(), 0, image=arrowL2, anchor="nw")
 
 imgCanvasU = Canvas(window, height=(arrowU1.height() * 2), width=arrowU1.width(), bg="#ECF1F4",
                     highlightthickness=0)
-imgCanvasU.create_image(arrowD2.width()/2, 5, image=arrowU1)
-imgCanvasU.create_image(arrowD2.width()/2, arrowD2.height()+5, image=arrowU2)
+imgCanvasU.create_image(arrowD2.width() / 2, 5, image=arrowU1)
+imgCanvasU.create_image(arrowD2.width() / 2, arrowD2.height() + 5, image=arrowU2)
 
 Misc.lift(greyBox)
 Misc.lift(cBox)
