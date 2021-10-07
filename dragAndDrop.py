@@ -1,14 +1,10 @@
 from tkinter import *
-import tkinter.font as tkfont
-from PIL import ImageTk, Image
+
 
 moveType = True
 movePhase = 0
 boxXList = [0, 770, 770, 0, 0, 720, 720, 50, 50, 670, 670, 100]
 boxYList = [0, 0, 250, 250, 50, 50, 200, 200, 100, 100, 150, 150]
-arrowTopLeftX = 10 / 3  # Distance from side of box
-arrow2TopLeftX = 25 / 3
-arrowTopLeftY = 50 / 3  # Distance from corner of border
 
 
 def drag_start(event):
@@ -93,22 +89,21 @@ def drag_stop(event):
                 Function to update positions based on the final location of click box
                 Updates click nbox, arrows, label and grey box position
             """
-    widget = event.widget
     global moveType
     global movePhase
     box_update = False
     x = cBox.winfo_x()
     y = cBox.winfo_y()
-    box_update = update_cBox(box_update, x, y)
-    if (box_update):
+    box_update = update_cbox(box_update, x, y)
+    if box_update:
         update_arrow(x, y)
         update_label(x, y)
-        update_gBox(x, y)
+        update_gbox(x, y)
     if movePhase == 9:
         Misc.lift(imgCanvasD)
 
 
-def update_cBox(box_update, x, y):
+def update_cbox(box_update, x, y):
     """ Updating click box x/y
 
                 Parameters:
@@ -228,7 +223,7 @@ def update_label(x, y):
         label.place(x=labelX[movePhase + 1], y=labelY[movePhase + 1])
         if movePhase % 2 != 0:  # change text and change justify to right or left depending on phase
             label.config(text=textArray[0])
-            if (movePhase == 1 or movePhase == 5 or movePhase == 9):  # Left Arrow
+            if movePhase == 1 or movePhase == 5 or movePhase == 9:  # Left Arrow
                 label.config(justify='right')
             else:  # Right Arrow
                 label.config(justify='left')
@@ -237,7 +232,7 @@ def update_label(x, y):
             label.config(justify='center')
 
 
-def update_gBox(x, y):
+def update_gbox(x, y):
     """ Update grey box x/y
 
                         Parameters:
@@ -290,11 +285,13 @@ window.geometry("820x300")  # Dimensions 2460x900 divide by 3
 background = Canvas(window, height=300, width=820, bg="#ECF1F4")
 background.place(x=-3, y=-3)
 
+# Grey Box
 greyBox = Frame(window, width=50, height=50, bg="#ECF1F4", highlightbackground="#9F9F9F", highlightthickness=3)
 greyBox.place(x=boxXList[1], y=boxYList[1])
 
+# Click Box
 cBox = Frame(window, width=50, height=50, bg="#ECF1F4", highlightbackground="#1A1A1B",
-             highlightthickness=3)  # Clickable Box
+             highlightthickness=3)  # Click-able Box
 cBox.place(x=boxXList[0], y=boxYList[0])
 cBox.bind("<Button-1>", drag_start)
 cBox.bind("<B1-Motion>", drag_motion)
@@ -312,6 +309,8 @@ labelY = [(40 / 3), 220 / 3 + 3, 265, 202,
           (40 / 3) + 103, (220 / 3) + 86, 165]
 label.place(x=labelX[movePhase], y=labelY[movePhase])
 window.update()  # IMP To allow arrows to be shown
+
+
 #   R Arrow label at position 0,4,8
 arrowX = [55, window.winfo_width() - 35, window.winfo_width() - 78, 15,
           55, window.winfo_width() - 85, window.winfo_width() - 128, 65,
