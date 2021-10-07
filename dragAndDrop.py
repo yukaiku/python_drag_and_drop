@@ -40,6 +40,8 @@ def drag_motion(event):
         """
     widget = event.widget
     global moveType
+    Misc.lift(greyBox)
+    Misc.lift(cBox)
     # Alternate slide type
     if moveType:  # Move Horizontally
         x = cBox.winfo_x() + event.x
@@ -73,6 +75,10 @@ def drag_stop(event):
         update_arrow(x, y)
         update_label(x, y)
         update_gBox(x, y)
+    if movePhase == 9:
+        Misc.lift(label)
+        Misc.lift(imgCanvasD)
+
 
 
 def update_cBox(box_update, x, y):
@@ -186,18 +192,23 @@ def update_label(x, y):
                         Return type:
 
                         Description:
-                        Updates label based on current x and y position of box and move phase
+                        Updates label's text and alignment based on current x and y position of box and move phase
                     """
     global movePhase
     x = x
     y = y
     if movePhase + 2 != len(boxXList):
         label.place(x=labelX[movePhase + 1], y=labelY[movePhase + 1])
-        if movePhase % 2 != 0:
+        if movePhase % 2 != 0:  # change text and change justify to right or left depending on phase
             label.config(text=textArray[0])
-            print(movePhase)
-        else:
+            if (movePhase == 1 or movePhase == 5 or movePhase == 9): # Left Arrow
+                label.config(justify='right')
+            else:  # Right Arrow
+                label.config(justify='left')
+        else:  # change text and center align if phase is at up or down arrow
             label.config(text=textArray[1])
+            label.config(justify='center')
+
 
 
 def update_gBox(x, y):
@@ -265,21 +276,21 @@ cBox.bind("<ButtonRelease-1>", drag_stop)
 textArray = ["Drag & Drop\nhorizontally to\nthe next case", "Drag & Drop\nvertically to\nthe next case"]
 label = Label(text=textArray[0], highlightthickness=0, bd=0, bg="#ECF1F4")
 label.config(font=("Roboto", 5), justify='left')
-labelX = [220 / 3 + 5, 775, 697, 5,
-          220 / 3 + 5, 725, 647, 55,
-          220 / 3 + 55, 670, 597]
+labelX = [220 / 3 + 5, 775, 699, 5,
+          220 / 3 + 5, 725, 649, 55,
+          220 / 3 + 55, 675, 599]
 labelY = [(40 / 3), 220/3+3, 265, 202,
           (40 / 3) + 53, (220/3)+53, 215, 152,
-          (40 / 3) + 103, (220/3)+103, 165]
+          (40 / 3) + 103, (220/3)+86, 165]
 label.place(x=labelX[movePhase], y=labelY[movePhase])
 window.update()  # IMP To allow arrows to be shown
 #   R Arrow label at position 0,4,8
-arrowX = [52, window.winfo_width() - 53, window.winfo_width() - 82, -4,
-          52, window.winfo_width() - 103, window.winfo_width() - 132, 46,
-          102, 0, window.winfo_width() - 178]  # x = 53 - 3
-arrowY = [50 / 3 - 23, 50, 247, window.winfo_height() - 78,
-          50 / 3 + 30, 100, 197, window.winfo_height() - 128,
-          50 / 3 + 80, 0, 147]
+arrowX = [55, window.winfo_width() - 35, window.winfo_width() - 78, 15,
+          55, window.winfo_width() - 85, window.winfo_width() - 128, 65,
+          105, window.winfo_width()-135, window.winfo_width() - 178]  # x = 53 - 3
+arrowY = [50 / 3 - 3, 55, 267, window.winfo_height() - 75,
+          50 / 3 + 49, 105, 217, window.winfo_height() - 125,
+          50 / 3 + 99, 138, 167]
 arrowR1 = PhotoImage(file="arrow_right.png")
 arrowR2 = PhotoImage(file="arrow_right.png")
 arrowD1 = PhotoImage(file="arrow_down.png")
@@ -289,26 +300,26 @@ arrowL2 = PhotoImage(file="arrow_left.png")
 arrowU1 = PhotoImage(file="arrow_up.png")
 arrowU2 = PhotoImage(file="arrow_up.png")
 
-imgCanvasR = Canvas(window, width=(arrowR1.width() * 2) + 4, height=arrowR1.height() + 20, bg="#ECF1F4",
+imgCanvasR = Canvas(window, width=(arrowR1.width() * 2), height=arrowR1.height(), bg="#ECF1F4",
                     highlightthickness=0)
-imgCanvasR.create_image(10, arrowR1.height() + 10, image=arrowR1)
-imgCanvasR.create_image(arrowR1.width() + 10, arrowR1.height() + 10, image=arrowR2)
+imgCanvasR.create_image(0, 0, image=arrowR1, anchor="nw")
+imgCanvasR.create_image(arrowR1.width(), 0, image=arrowR2, anchor="nw")
 imgCanvasR.place(x=arrowX[movePhase], y=arrowY[movePhase])
 
-imgCanvasD = Canvas(window, height=(arrowD1.height() * 2) + 4, width=arrowD1.width() + 20, bg="#ECF1F4",
+imgCanvasD = Canvas(window, height=(arrowD1.height() * 2), width=arrowD1.width(), bg="#ECF1F4",
                     highlightthickness=0)
-imgCanvasD.create_image(arrowD1.width() + 10, 10, image=arrowD1)
-imgCanvasD.create_image(arrowD1.width() + 10, arrowD1.height() + 10, image=arrowD2)
+imgCanvasD.create_image(arrowD1.width()/2,5, image=arrowD1)
+imgCanvasD.create_image(arrowD1.width()/2, arrowD1.height()+5, image=arrowD2)
 
-imgCanvasL = Canvas(window, width=(arrowL1.width() * 2) + 4, height=arrowL1.height() + 20, bg="#ECF1F4",
+imgCanvasL = Canvas(window, width=(arrowL1.width() * 2), height=arrowL1.height(), bg="#ECF1F4",
                     highlightthickness=0)
-imgCanvasL.create_image(10, arrowL1.height() + 10, image=arrowL1)
-imgCanvasL.create_image(arrowL1.width() + 10, arrowL1.height() + 10, image=arrowL2)
+imgCanvasL.create_image(0, 0, image=arrowL2, anchor="nw")
+imgCanvasL.create_image(arrowL1.width(), 0, image=arrowL2, anchor="nw")
 
-imgCanvasU = Canvas(window, height=(arrowU1.height() * 2) + 4, width=arrowU1.width() + 20, bg="#ECF1F4",
+imgCanvasU = Canvas(window, height=(arrowU1.height() * 2), width=arrowU1.width(), bg="#ECF1F4",
                     highlightthickness=0)
-imgCanvasU.create_image(arrowU1.width() + 10, 10, image=arrowU1)
-imgCanvasU.create_image(arrowU1.width() + 10, arrowU1.height() + 10, image=arrowU2)
+imgCanvasU.create_image(arrowD2.width()/2, 5, image=arrowU1)
+imgCanvasU.create_image(arrowD2.width()/2, arrowD2.height()+5, image=arrowU2)
 
 Misc.lift(greyBox)
 Misc.lift(cBox)
