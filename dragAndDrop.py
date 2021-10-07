@@ -11,6 +11,16 @@ arrowTopLeftY = 50 / 3  # Distance from corner of border
 
 
 def drag_start(event):
+    """ On click cBox function
+
+            Parameters:
+            event: object clicked
+
+            Return type:
+
+            Description:
+            Start of moving the click box
+        """
     widget = event.widget
     # widget.startX = event.x
     widget.startX = cBox.winfo_x()
@@ -18,6 +28,16 @@ def drag_start(event):
 
 
 def drag_motion(event):
+    """ Drag motion of box clicked
+
+            Parameters:
+            event: object clicked
+
+            Return type:
+
+            Description:
+            Moves the box based on arrow location on a X/Y plane
+        """
     widget = event.widget
     global moveType
     # Alternate slide type
@@ -29,8 +49,19 @@ def drag_motion(event):
         cBox.place(y=y)
 
 
-# Update cbox, arrow and gbox
+
 def drag_stop(event):
+    """ Drag stop motion of box
+
+                Parameters:
+                event: object clicked
+
+                Return type:
+
+                Description:
+                Function to update positions based on the final location of click box
+                Updates click nbox, arrows, label and grey box position
+            """
     widget = event.widget
     global moveType
     global movePhase
@@ -44,40 +75,45 @@ def drag_stop(event):
         update_gBox(x, y)
 
 
-# Gets boxUpdate and box X and Y
-# Updates cbox location
-# Returns box update status
 def update_cBox(box_update, x, y):
+    """ Updating click box x/y
+
+                Parameters:
+                box_update: Boolean true/false based on whether box needs to be move to next phase
+                x: int x-coordinates of box
+                y: int y-coordinates of box
+
+                Return type:
+                box_update: Boolean returns if box updated or not
+
+                Description:
+                Updates cbox and update status based on current x and y position of box afterwhich
+                returns box update status
+            """
     box_update = box_update
     x = x
     y = y
     if movePhase == 0 and boxXList[movePhase + 1] - 20 < x < boxXList[movePhase + 1] + 20 \
             and moveType:
         cBox.place(x=boxXList[movePhase + 1])
-        imgCanvasD.place(x=arrowX[movePhase + 1], y=arrowY[movePhase + 1])
         box_update = not box_update
     elif (movePhase == 4 or movePhase == 8) and boxXList[movePhase + 1] - 20 < x < boxXList[movePhase + 1] + 20 \
             and moveType:
         cBox.place(x=boxXList[movePhase + 1])
-        imgCanvasD.place(x=arrowX[movePhase + 1], y=arrowY[movePhase + 1])
         box_update = not box_update
     elif (movePhase == 1 or movePhase == 5 or movePhase == 9) and boxYList[movePhase + 1] - 20 < y < boxYList[
         movePhase + 1] + 20 \
             and not moveType:
         cBox.place(y=boxYList[movePhase + 1])
-        imgCanvasL.place(x=arrowX[movePhase + 1], y=arrowY[movePhase + 1])
         box_update = not box_update
     elif (movePhase == 2 or movePhase == 6 or movePhase == 10) and boxXList[movePhase + 1] - 20 < x < boxXList[
         movePhase + 1] + 20 \
             and moveType:
         cBox.place(x=boxXList[movePhase + 1])
-        if movePhase + 2 != len(boxXList):
-            imgCanvasU.place(x=arrowX[movePhase + 1], y=arrowY[movePhase + 1])
         box_update = not box_update
     elif (movePhase == 3 or movePhase == 7) and boxYList[movePhase + 1] - 20 < y < boxYList[movePhase + 1] + 20 \
             and not moveType:
         cBox.place(y=boxYList[movePhase + 1])
-        imgCanvasR.place(x=arrowX[movePhase + 1], y=arrowY[movePhase + 1])
         box_update = not box_update
     elif moveType:
         cBox.place(x=boxXList[movePhase])
@@ -86,8 +122,18 @@ def update_cBox(box_update, x, y):
     return box_update
 
 
-# update arrow positions
 def update_arrow(x, y):
+    """ Update arrow x/y
+
+                    Parameters:
+                    x: int x-coordinates of box
+                    y: int y-coordinates of box
+
+                    Return type:
+
+                    Description:
+                    Updates arrow based on current x and y position of box and move phase
+                """
     global movePhase
     x = x
     y = y
@@ -131,6 +177,17 @@ def update_arrow(x, y):
 
 # updateLabel
 def update_label(x, y):
+    """ Update label x/y
+
+                        Parameters:
+                        x: int x-coordinates of box
+                        y: int y-coordinates of box
+
+                        Return type:
+
+                        Description:
+                        Updates label based on current x and y position of box and move phase
+                    """
     global movePhase
     x = x
     y = y
@@ -143,8 +200,18 @@ def update_label(x, y):
             label.config(text=textArray[1])
 
 
-# Moves gbox around and call last phase if end of array
 def update_gBox(x, y):
+    """ Update grey box x/y
+
+                        Parameters:
+                        x: int x-coordinates of box
+                        y: int y-coordinates of box
+
+                        Return type:
+
+                        Description:
+                        Updates grey box based on current x and y position of box and move phase
+                    """
     global moveType
     global movePhase
     x = x
@@ -160,9 +227,16 @@ def update_gBox(x, y):
         last_phase()
 
 
-# Sets last phase process
-# Unbind cBox, remove old labels and arrows
 def last_phase():
+    """ Last phase of movement
+
+                        Parameters:
+
+                        Return type:
+
+                        Description:
+                        Updates label, grey box and click box status
+                    """
     greyBox.destroy()
     label.destroy()
     cBox.unbind("<Button-1>")
