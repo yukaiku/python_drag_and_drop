@@ -63,3 +63,8 @@ auto-py-to-exe
 <h3>Credits:</h3> 
 How to convert into exe file from py:
 https://pythonprogramming.altervista.org/auto-py-to-exe-only-one-file-with-images-for-our-python-apps/
+
+<h3>Notes:</h3>
+* Updated on 8/10/2021
+* Python env 3.9
+* Display works on osX, will look different on windows
