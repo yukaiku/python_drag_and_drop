@@ -1,5 +1,5 @@
 from tkinter import *
-
+import os, sys
 
 moveType = True
 movePhase = 0
@@ -318,14 +318,27 @@ arrowX = [55, window.winfo_width() - 35, window.winfo_width() - 78, 15,
 arrowY = [50 / 3 - 3, 55, 267, window.winfo_height() - 75,
           50 / 3 + 49, 105, 217, window.winfo_height() - 125,
           50 / 3 + 99, 115, 167]
-arrowR1 = PhotoImage(file="arrow_right.png")
-arrowR2 = PhotoImage(file="arrow_right.png")
-arrowD1 = PhotoImage(file="arrow_down.png")
-arrowD2 = PhotoImage(file="arrow_down.png")
-arrowL1 = PhotoImage(file="arrow_left.png")
-arrowL2 = PhotoImage(file="arrow_left.png")
-arrowU1 = PhotoImage(file="arrow_up.png")
-arrowU2 = PhotoImage(file="arrow_up.png")
+
+
+ar1 = os.path.join(os.path.dirname(sys.executable),'arrow_right.png')
+ad1 = os.path.join(os.path.dirname(sys.executable),'arrow_down.png')
+al1 = os.path.join(os.path.dirname(sys.executable),'arrow_left.png')
+au1 = os.path.join(os.path.dirname(sys.executable),'arrow_up.png')
+"""
+Uncomment this path and comment the top variables to run on py 
+ar1= "arrow_right.png"
+ad1= "arrow_down.png"
+al1= "arrow_left.png"
+au1= "arrow_up.png"
+"""
+arrowR1 = PhotoImage(file=ar1)
+arrowR2 = PhotoImage(file=ar1)
+arrowD1 = PhotoImage(file=ad1)
+arrowD2 = PhotoImage(file=ad1)
+arrowL1 = PhotoImage(file=al1)
+arrowL2 = PhotoImage(file=al1)
+arrowU1 = PhotoImage(file=au1)
+arrowU2 = PhotoImage(file=au1)
 
 imgCanvasR = Canvas(window, width=(arrowR1.width() * 2), height=arrowR1.height(), bg="#ECF1F4",
                     highlightthickness=0)
